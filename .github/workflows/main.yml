@@ -3,7 +3,7 @@ name: GemRB
 on: [push, pull_request]
 
 jobs:
-  build-logo:
+  build:
     runs-on: ubuntu-latest
     container:
       image: arcnor/toolchain-retrofw:latest
