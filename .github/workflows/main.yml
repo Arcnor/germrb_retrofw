@@ -1,0 +1,25 @@
+name: GemRB
+
+on: [push, pull_request]
+
+jobs:
+  build-logo:
+    runs-on: ubuntu-latest
+    container:
+      image: arcnor/toolchain-retrofw:latest
+
+    steps:
+    - uses: actions/checkout@v2
+      with:
+        submodules: 'true'
+    - name: generate config
+      run: cmake -Bbuild -DCMAKE_FIND_DEBUG_MODE=true -DCMAKE_BUILD_TYPE=Release -DCMAKE_TOOLCHAIN_FILE=$CROSS_ROOT/share/buildroot/toolchainfile.cmake -DCMAKE_C_FLAGS_RELEASE="-O3 -DDINGOO -DNDEBUG -I$SYSROOT/usr/include" -DCMAKE_CXX_FLAGS_RELEASE="-O3 -DNDEBUG -DDINGOO -I$SYSROOT/usr/include" -DUSE_SDL2=NO -DUSE_OPENAL=OFF -DUSE_FREETYPE=OFF -DUSE_LIBVLC=OFF
+    - name: build
+      run: cmake --build build --parallel
+    - uses: actions/upload-artifact@v2
+      with:
+        name: gemrb
+        path: |
+          build/gemrb/gemrb
+          build/gemrb/plugins/*.so
+
